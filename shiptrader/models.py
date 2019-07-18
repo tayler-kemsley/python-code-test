@@ -12,6 +12,9 @@ class Starship(models.Model):
     crew = models.IntegerField(null=True)
     passengers = models.IntegerField(null=True)
 
+    class Meta:
+        ordering = ['-id']
+
     def __str__(self):
         return '{} {}'.format(self.manufacturer, self.model)
 
@@ -22,6 +25,9 @@ class Listing(models.Model):
     price = models.BigIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     active = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-id']
 
     def __str__(self):
         return self.name
