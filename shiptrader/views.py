@@ -34,7 +34,9 @@ class StarShipsAPI(ShipTraderAPI):
         # Filter by starship class, if one is specified
         starship_class = request.query_params.get('class')
         if starship_class:
-            queryset = Starship.objects.filter(starship_class=starship_class)
+            queryset = Starship.objects.filter(
+                starship_class__iexact=starship_class
+            )
         else:
             queryset = Starship.objects.all()
 
