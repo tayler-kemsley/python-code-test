@@ -69,4 +69,12 @@ class ListingAPI(APIView):
 
 class ListingAPIActions(APIView):
     def get(self, request, listing_id, action):
-        pass
+        listing = Listing.objects.get(id=listing_id)
+        if action == 'activate':
+            listing.active = True
+            listing.save()
+        if action == 'deactivate':
+            listing.active = False
+            listing.save()
+        serializer = ListingSerializer(listing)
+        return Response(serializer.data, status=status.HTTP_200_OK)

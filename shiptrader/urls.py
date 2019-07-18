@@ -10,7 +10,7 @@ urlpatterns = [
     url(r'^listings/$', views.ListingsAPI.as_view(), name='listings'),
     url(r'^listings/(?P<listing_id>[0-9]+)/$', views.ListingAPI.as_view(), name='listing'),
     url(
-        r'^listings/(?P<listing_id>[0-9]+)/action/(?:activate|deactivate)/$',
+        r'^listings/(?P<listing_id>[0-9]+)/action/(?P<action>activate|deactivate)/$',
         views.ListingAPIActions.as_view(),
         name='listing-actions'
     ),
