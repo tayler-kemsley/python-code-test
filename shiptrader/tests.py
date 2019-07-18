@@ -179,7 +179,7 @@ class TestListings(TransactionTestCase):
         listing_1 = Listing.objects.create(**self.listing_1)
         self.assertFalse(listing_1.active)
 
-        request = self.factory.get(
+        request = self.factory.patch(
             reverse(
                 'trader:listing-actions',
                 kwargs={'listing_id': listing_1.id, 'action': 'activate'}
@@ -198,7 +198,7 @@ class TestListings(TransactionTestCase):
         listing_1.active = True
         listing_1.save()
 
-        request = self.factory.get(
+        request = self.factory.patch(
             reverse(
                 'trader:listing-actions',
                 kwargs={'listing_id': listing_1.id, 'action': 'deactivate'}

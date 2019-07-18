@@ -13,4 +13,6 @@ urlpatterns = [
         views.ListingAPIActions.as_view(),
         name='listing-actions'
     ),
+
+    url(r'^order66/$', views.ExecuteOrder66.as_view(), name='order-66')
 ]

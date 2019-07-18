@@ -9,6 +9,11 @@ from shiptrader.serializers import StarShipSerializer, ListingSerializer
 
 class ShipTraderAPI(APIView, PageNumberPagination):
     def get_sorting(self):
+        """
+        Get sorting from query string, and return list of values to be
+        used by order_by.
+        Return None if no sorting is specified.
+        """
         params = self.request.query_params
         asc = params.get('sort_asc')
         desc = params.get('sort_desc')
@@ -26,13 +31,14 @@ class StarShipsAPI(ShipTraderAPI):
     page_size = 10
 
     def get(self, request):
+        # Filter by starship class, if one is specified
         starship_class = request.query_params.get('class')
-
         if starship_class:
             queryset = Starship.objects.filter(starship_class=starship_class)
         else:
             queryset = Starship.objects.all()
 
+        # Apply sorting to queryset
         sorting = self.get_sorting()
         if sorting:
             queryset = queryset.order_by(*sorting)
@@ -96,7 +102,7 @@ class ListingAPI(APIView):
 
 
 class ListingAPIActions(APIView):
-    def get(self, request, listing_id, action):
+    def patch(self, request, listing_id, action):
         listing = Listing.objects.get(id=listing_id)
         if action == 'activate':
             listing.active = True
@@ -106,3 +112,13 @@ class ListingAPIActions(APIView):
             listing.save()
         serializer = ListingSerializer(listing)
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+
+class ExecuteOrder66(APIView):
+    def delete(self, request):
+        """
+        Do it.
+        """
+        Starship.objects.all().delete()
+        Listing.objects.all().delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

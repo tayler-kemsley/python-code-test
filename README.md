@@ -68,7 +68,15 @@ Get all listings:
 
 Get specific listing 
 
-`GET: /shiptrader/listing/<ship_id>/`
+`GET: /shiptrader/listing/<listing_id>/`
+
+## Activating/Deactivating listings
+
+Activating and deactivating listings can be done with the following action endpoint
+
+Activate: `PATCH: /shiptrader/listing/<listing_id>/action/activate/`
+
+Deactivate `PATCH: /shiptrader/listing/<listing_id>/action/deactivate/`
 
 ## Sorting results
 
