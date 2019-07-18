@@ -1,59 +1,91 @@
-# Ostmodern Python Code Test
+# Starship Trader
 
-The goal of this exercise is to test that you know your way around Django and
-REST APIs. Approach it the way you would an actual long-term project.
+## Importing ship models
 
-The idea is to build a platform on which your users can buy and sell Starships.
-To make this process more transparent, it has been decided to source some
-technical information about the Starships on sale from the [Starship
-API](https://swapi.co/documentation#starships).
+Importing ship models from the SWAPI is done via a management command so this command can be run regularly on a cron job.
 
-A Django project some initial data models have been created already. You may need
-to do some additional data modelling to satify the requirements.
+The command is as follows: `./manage.py update_database`
 
-## Getting started
+## Creating new ship models
 
-* This test works with either
-  [Docker](https://docs.docker.com/compose/install/#install-compose) or
-  [Vagrant](https://www.vagrantup.com/downloads.html)
-* Get the code from `https://github.com/ostmodern/python-code-test`
-* Do all your work in your own `develop` branch
-* Once you have downloaded the code the following commands will get the site up
-  and running
+`POST: /shiptrader/starships/`
 
-```shell
-# For Docker
-docker-compose up
-# You can run `manage.py` commands using the `./manapy` wrapper
+Example JSON payload:
 
-# For Vagrant
-vagrant up
-vagrant ssh
-# Inside the box
-./manage.py runserver 0.0.0.0:8008
 ```
-* The default Django "It worked!" page should now be available at
-  http://localhost:8008/
+    {
+        "model": "Sentinel-class landing craft",
+        "starship_class": "landing craft",
+        "manufacturer": "Sienar Fleet Systems, Cyngus Spaceworks",
+        "length": 38.0,
+        "hyperdrive_rating": 1.0,
+        "cargo_capacity": 180000,
+        "crew": 5,
+        "passengers": 75
+    }
+```
 
-## Tasks
+## Getting ship models
 
-Your task is to build a JSON-based REST API for your frontend developers to
-consume. You have built a list of user stories with your colleagues, but you get
-to decide how to design the API. Remember that the frontend developers will need
-some documentation of your API to understand how to use it.
+Get all ships:
 
-We do not need you to implement users or authentication, to reduce the amount of
-time this exercise will take to complete. You may use any external libraries you
-require.
+`GET: /shiptrader/starships/`
 
-* We need to be able to import all existing
-  [Starships](https://swapi.co/documentation#starships) to the provided Starship
-  Model
-* A potential buyer can browse all Starships
-* A potential buyer can browse all the listings for a given `starship_class`
-* A potential buyer can sort listings by price or time of listing
-* To list a Starship as for sale, the user should supply the Starship name and
-  list price
-* A seller can deactivate and reactivate their listing
+Get specific ship class
 
-After you are done, create a release branch in your repo and send us the link.
+`GET: /shiptrader/starships/?class=landing%20craft`
+
+Get specific ship
+
+`GET: /shiptrader/starships/<ship_id>/`
+
+## Deleting ship models
+
+`DELETE: /shiptrader/starships/<ship_id>/`
+
+## Creating new listing
+
+`POST: /shiptrader/listings/`
+
+Example JSON payload:
+
+```
+    {
+        "name": "test",
+        "price": 399,
+        "active": false,
+        "ship_type": 1
+    }
+```
+
+"ship_type" refers to the ID of a the star ship model in the database.
+
+## Getting listings
+
+Get all listings:
+
+`GET: /shiptrader/listings/`
+
+Get specific listing 
+
+`GET: /shiptrader/listing/<listing_id>/`
+
+## Activating/Deactivating listings
+
+Activating and deactivating listings can be done with the following action endpoint
+
+Activate: `PATCH: /shiptrader/listing/<listing_id>/action/activate/`
+
+Deactivate `PATCH: /shiptrader/listing/<listing_id>/action/deactivate/`
+
+## Sorting results
+
+Results lists can be sorted either ascending or descending on any value using the `sort_asc` or `sort_desc` query parameter.
+
+Examples:
+
+Sorting ships by length: `GET: /shiptrader/starships/?sort_asc=length`
+
+Sorting listings by price: `GET: /shiptrader/listings/?sort_desc=price`
+
+

@@ -2,18 +2,34 @@ from django.db import models
 
 
 class Starship(models.Model):
+    model = models.CharField(max_length=255)
     starship_class = models.CharField(max_length=255)
     manufacturer = models.CharField(max_length=255)
 
-    length = models.FloatField()
-    hyperdrive_rating = models.FloatField()
-    cargo_capacity = models.BigIntegerField()
+    length = models.FloatField(null=True)
+    hyperdrive_rating = models.FloatField(null=True)
+    cargo_capacity = models.BigIntegerField(null=True)
+    crew = models.IntegerField(null=True)
+    passengers = models.IntegerField(null=True)
 
-    crew = models.IntegerField()
-    passengers = models.IntegerField()
+    class Meta:
+        ordering = ['-id']
+
+    def __str__(self):
+        return '{} {}'.format(self.manufacturer, self.model)
 
 
 class Listing(models.Model):
     name = models.CharField(max_length=255)
     ship_type = models.ForeignKey(Starship, related_name='listings')
-    price = models.IntegerField()
+    price = models.BigIntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    active = models.BooleanField(default=False)
+
+    class Meta:
+        ordering = ['-id']
+
+    def __str__(self):
+        return self.name
+
+
