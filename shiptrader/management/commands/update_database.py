@@ -10,9 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 class Command(BaseCommand):
-    def sanitise(self, data):
+    def sanitise(self, data, remove_commas=False):
         if data.lower() == 'unknown':
             return None
+        if remove_commas:
+            return data.replace(',', '')
         return data
 
 
@@ -23,7 +25,7 @@ class Command(BaseCommand):
             manufacturer=data['manufacturer'],
 
             # Potentially unknown data
-            length=self.sanitise(data['length']).replace(',', ''),
+            length=self.sanitise(data['length'], remove_commas=True),
             hyperdrive_rating=self.sanitise(data['hyperdrive_rating']),
             passengers=self.sanitise(data['passengers']),
             crew=self.sanitise(data['crew']),
