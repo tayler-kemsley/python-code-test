@@ -7,7 +7,7 @@ from shiptrader.models import Starship, Listing
 from shiptrader.serializers import StarShipSerializer, ListingSerializer
 
 
-class ShipTraderAPI(APIView):
+class ShipTraderAPI(APIView, PageNumberPagination):
     def get_sorting(self):
         params = self.request.query_params
         asc = params.get('sort_asc')
@@ -21,7 +21,8 @@ class ShipTraderAPI(APIView):
             ordering.append('-{}'.format(desc))
         return ordering
 
-class StarShipsAPI(ShipTraderAPI, PageNumberPagination):
+
+class StarShipsAPI(ShipTraderAPI):
     page_size = 10
 
     def get(self, request):
@@ -44,7 +45,7 @@ class StarShipsAPI(ShipTraderAPI, PageNumberPagination):
         serializer = StarShipSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -60,7 +61,7 @@ class StarShipAPI(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-class ListingsAPI(ShipTraderAPI, PageNumberPagination):
+class ListingsAPI(ShipTraderAPI):
     page_size = 10
 
     def get(self, request):
@@ -78,7 +79,7 @@ class ListingsAPI(ShipTraderAPI, PageNumberPagination):
         serializer = ListingSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
@@ -92,6 +93,7 @@ class ListingAPI(APIView):
         listing = Listing.objects.get(id=listing_id)
         listing.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
 
 class ListingAPIActions(APIView):
     def get(self, request, listing_id, action):
